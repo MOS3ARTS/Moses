@@ -1,0 +1,45 @@
+**manifest.json**
+```json
+{
+  "name": "Zanzibar Trip Countdown",
+  "short_name": "Zanzibar",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#008080",
+  "theme_color": "#008080",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
+```
+
+**service-worker.js**
+```javascript
+self.addEventListener('install', event => {
+  event.waitUntil(
+    caches.open('zanzibar-countdown-v1').then(cache => {
+      return cache.addAll([
+        './index.html',
+        './manifest.json'
+      ]);
+    })
+  );
+});
+
+self.addEventListener('fetch', event => {
+  event.respondWith(
+    caches.match(event.request).then(response => {
+      return response || fetch(event.request);
+    })
+  );
+});
+```
